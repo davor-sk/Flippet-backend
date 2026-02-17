@@ -14,7 +14,7 @@ async function connectToDatabase() {
     const client = new MongoClient(mongoURI);
     await client.connect();
     console.log("Uspješno spajanje na MongoDB bazu");
-    let db = client.db("users_db");
+    let db = client.db("flippet_db");
     return db;
   } catch (error) {
     console.error(`Došlo je do greške pri spajanju na bazu! Greška: ${error}`);

@@ -1,6 +1,6 @@
 import express from "express";
 import cors from "cors";
-import { connectToDatabase } from "./db.js";
+import collectionsRouter from "./routes/collections.js";
 
 const app = express();
 const PORT = 3000;
@@ -8,11 +8,7 @@ const PORT = 3000;
 app.use(express.json());
 app.use(cors());
 
-let db = connectToDatabase();
-
-app.get("/", (req, res) => {
-  return res.status(200).json({ message: "Radi!" });
-});
+app.use("/collections", collectionsRouter);
 
 app.listen(PORT, (error) => {
   if (error) {
