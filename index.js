@@ -1,6 +1,7 @@
 import express from "express";
 import cors from "cors";
 import collectionsRouter from "./routes/collections.js";
+import usersRouter from "./routes/users.js";
 
 const app = express();
 const PORT = 3000;
@@ -9,6 +10,7 @@ app.use(express.json());
 app.use(cors());
 
 app.use("/collections", collectionsRouter);
+app.use("/users", usersRouter);
 
 app.listen(PORT, (error) => {
   if (error) {
