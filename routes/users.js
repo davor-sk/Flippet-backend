@@ -1,16 +1,23 @@
 import express from "express";
 import { connectToDatabase } from "../utils/db.js";
 import { check_password, generateJWT, hash_password } from "../auth.js";
-import { findUser } from "../middleware/collections.js";
+import { findUser } from "../middleware/users.js";
+import {
+  validateRegister,
+  validateLogin,
+} from "../validators/user_validator.js";
 
 const router = express.Router();
 
-router.post("/register", [findUser], async (req, res) => {
+router.post("/register", [validateRegister, findUser], async (req, res) => {
   const korisnik = req.body;
   try {
     let hashed_password = await hash_password(korisnik.password);
     let novi_korisnik = {
-      ...korisnik,
+      username: korisnik.username,
+      email: korisnik.email,
+      first_name: korisnik.first_name,
+      last_name: korisnik.last_name,
       password: hashed_password,
       registeredAt: new Date(),
     };
@@ -32,7 +39,7 @@ router.post("/register", [findUser], async (req, res) => {
   }
 });
 
-router.post("/login", [findUser], async (req, res) => {
+router.post("/login", [validateLogin, findUser], async (req, res) => {
   const password = req.body.password;
 
   try {
@@ -52,7 +59,7 @@ router.post("/login", [findUser], async (req, res) => {
         email: req.user.email,
       };
       let jwt_token = await generateJWT(jwt_payload);
-      return res.status(200).json({ user: req.user, jwt_token: jwt_token });
+      return res.status(200).json({ user: jwt_payload, jwt_token: jwt_token });
     }
   } catch (error) {
     console.error("Greška na serveru", error);
